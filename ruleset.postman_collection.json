@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "cd4a01a3-1703-4baa-ba85-68467addd3a5",
+		"name": "rules",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "list ruleset",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete ruleset",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets/51c1563d-95e8-4d24-95db-4c79e2d7d287",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets",
+						"51c1563d-95e8-4d24-95db-4c79e2d7d287"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create ruleset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"Name\": \"test_ruleset_2\",\n    \"StartDate\": \"2019-08-11T05:21:10+05:21\",\n\t\"EndDate\": \"2019-08-14T05:21:10+05:21\",\n\t\"Enable\": true,\n\t\"Rules\": [{\n\t\t\"Name\":\"rule1\",\n        \"Enable\": true,\n        \"WhenConditions\": [\n        \t{\n        \t\t\"Field1\": \"field1\", \n        \t\t\"Field2\": \"35\", \n        \t\t\"Operator\": \">\"\n        \t}],\n        \"ThenActions\": [\n        \t{\n        \t\t\"Field1\": \"cashback\", \n        \t\t\"Operator\": \"=\",\n        \t\t\"value\": \"10\"\n        \t}]\n\t},\n\t{\n\t\t\"Name\":\"rule2\",\n        \"Enable\": true,\n        \"WhenConditions\": [\n        \t{\n        \t\t\"Field1\": \"field1\", \n        \t\t\"Field2\": \"75\", \n        \t\t\"Operator\": \">\"\n        \t}],\n        \"ThenActions\": [\n        \t{\n        \t\t\"Field1\": \"cashback\", \n        \t\t\"Operator\": \"=\",\n        \t\t\"value\": \"10\"\n        \t}]\n\t},\n\t{\n\t\t\"Name\":\"rule3\",\n        \"Enable\": true,\n        \"WhenConditions\": [\n        \t{\n        \t\t\"Field1\": \"field1\", \n        \t\t\"Field2\": \"100\", \n        \t\t\"Operator\": \"<\"\n        \t}],\n        \"ThenActions\": [\n        \t{\n        \t\t\"Field1\": \"cashback\",\n        \t\t\"Operator\": \"=\",\n        \t\t\"value\": \"10\"\n        \t}]\n\t}]\n}"
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "evaluate ruleset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"RulesetID\": \"ffc98ca2-ec55-4002-b688-5b6ca408da10\",\n\t\"Record\": {\n\t\t\"field1\": 20\n\t}\n}"
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets/_evaluate",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets",
+						"_evaluate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update ruleset",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n            \"id\": \"ffc98ca2-ec55-4002-b688-5b6ca408da10\",\n            \"name\": \"ruleset2\",\n            \"StartDate\": \"2019-08-05T05:30:10+05:30\",\n            \"EndDate\": \"2019-08-05T05:30:10+05:30\",\n            \"Enable\": true,\n            \"Rules\": [\n                {\n                    \"id\": \"ef3b0a9e-ba19-4b4b-99f7-6ed145db8846\",\n                    \"name\": \"rule1\",\n                    \"Enable\": true,\n                    \"WhenConditions\": [\n                        {\n                            \"id\": \"cc1b4ba6-358e-4980-b388-eca70aed356a\",\n                            \"Field1\": \"age\",\n                            \"Field2\": \"35\",\n                            \"Operator\": \">\",\n                            \"Threshold\": \"\"\n                        },\n                        {\n                            \"id\": \"ad56b3b8-62da-4d96-adcd-2890539c6779\",\n                            \"Field1\": \"interest\",\n                            \"Field2\": [\n                                \"reading\",\n                                \"music\",\n                                \"watching netflix\"\n                            ],\n                            \"Operator\": \"in\",\n                            \"Threshold\": \"\"\n                        }\n                    ],\n                    \"ThenActions\": [\n                        {\n                            \"id\": \"1b99fd10-3113-4511-894f-762814b8b129\",\n                            \"Field1\": \"cashback\",\n                            \"Value\": \"10\"\n                        }\n                    ]\n                }\n            ]\n        }\n"
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets/ffc98ca2-ec55-4002-b688-5b6ca408da10",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets",
+						"ffc98ca2-ec55-4002-b688-5b6ca408da10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get ruleset by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/rulesets/ffc98ca2-ec55-4002-b688-5b6ca408da10",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"rulesets",
+						"ffc98ca2-ec55-4002-b688-5b6ca408da10"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
