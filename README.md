@@ -4,6 +4,9 @@
 - step 3: go run main.go
 
 # APIs
+
+Postman Collection Link: https://github.com/nimesh-mittal/rule_service/blob/master/ruleset.postman_collection.json
+
 - Create Ruleset
 - List Ruleset
 - Update Ruleset
