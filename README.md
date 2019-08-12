@@ -12,7 +12,7 @@ Postman Collection Link: https://github.com/nimesh-mittal/rule_service/blob/mast
 - Update Ruleset
 - Delete Ruleset
 - Get Ruleset By ID
-- Evaluate Ruleset
+- Evaluate Ruleset: Takes ruleset id and record and return matching rule with modified record
 
 # Extendability
 ### Adding support for new data type
