@@ -107,6 +107,7 @@ func CheckRule(rule Rule, record Record) (bool, error) {
 	return response, nil
 }
 
+// CheckWhenCondition return true if when condition resolve for the record
 func CheckWhenCondition(whenCondition WhenCondition, record Record) (bool, error) {
 	op := whenCondition.Operator
 	fieldName := whenCondition.Field1
@@ -148,6 +149,7 @@ func CheckWhenCondition(whenCondition WhenCondition, record Record) (bool, error
 	return value, nil
 }
 
+// InferFieldType infers field data type for the operator
 func InferFieldType(op string) (string, error) {
 	val, ok := OperatorType[op]
 	if !ok {
@@ -156,6 +158,7 @@ func InferFieldType(op string) (string, error) {
 	return val, nil
 }
 
+// GetValue returns value after applying op on f1 and f2 field
 func GetValue(f1 interface{}, f2 interface{}, op string) (bool, error) {
 
 	function, ok := OperatorFunction[op]
@@ -171,6 +174,7 @@ func GetValue(f1 interface{}, f2 interface{}, op string) (bool, error) {
 	return function(f1, f2), nil
 }
 
+// GetValueFromRecord returns value from the record for field fieldName
 func GetValueFromRecord(fieldName string, record Record) (interface{}, error) {
 	value, ok := record.Fields[fieldName]
 
