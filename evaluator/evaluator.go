@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// ApplyRule returns modified record
 func ApplyRule(rule *Rule, record *Record) *Record {
 	if rule == nil {
 		return record
@@ -27,6 +28,7 @@ func ApplyRule(rule *Rule, record *Record) *Record {
 	return record
 }
 
+// CheckRuleset returns matched rule based on the provided strategy
 func CheckRuleset(rs *Ruleset, record *Record, strategy string) (Rule, error) {
 
 	if CheckRulesetIneligible(*rs) {
@@ -73,6 +75,7 @@ func CheckRuleset(rs *Ruleset, record *Record, strategy string) (Rule, error) {
 	return Rule{}, ErrorEmptyMatch
 }
 
+// checks for the eligibility of the rule
 func CheckRulesetIneligible(rs Ruleset) bool {
 	if rs.Enable && time.Now().After(rs.StartDate) && time.Now().Before(rs.EndDate) {
 		return false
@@ -86,6 +89,7 @@ func CheckRulesetIneligible(rs Ruleset) bool {
 	return true
 }
 
+// CheckRule returns true if the rule resolves for record values
 func CheckRule(rule Rule, record Record) (bool, error) {
 	response := true
 
