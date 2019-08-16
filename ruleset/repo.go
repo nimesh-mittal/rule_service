@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"rule_service/commons"
-	"rule_service/executor"
+	"rule_service/evaluator"
 	"rule_service/models"
 	"time"
 
@@ -50,7 +50,7 @@ func (ctx *RulesetRepoContext) SafeClose() {
 	}
 }
 
-func (ctx *RulesetRepoContext) ListRuleset(flowContext *models.FlowContext, limit int, offset int) (*[]executor.Ruleset, error) {
+func (ctx *RulesetRepoContext) ListRuleset(flowContext *models.FlowContext, limit int, offset int) (*[]evaluator.Ruleset, error) {
 	findOptions := options.Find()
 	findOptions.SetLimit(int64(limit))
 	findOptions.SetSkip(int64(offset))
@@ -66,9 +66,9 @@ func (ctx *RulesetRepoContext) ListRuleset(flowContext *models.FlowContext, limi
 		return nil, err
 	}
 
-	var rulesets []executor.Ruleset
+	var rulesets []evaluator.Ruleset
 	for cursor.Next(context.TODO()) {
-		var rs executor.Ruleset
+		var rs evaluator.Ruleset
 		err := cursor.Decode(&rs)
 		if err != nil {
 			return nil, err
@@ -84,7 +84,7 @@ func (ctx *RulesetRepoContext) ListRuleset(flowContext *models.FlowContext, limi
 }
 
 // TODO: make it efficient, current implementation is very hacky
-func (ctx *RulesetRepoContext) GetRuleset(flowContext *models.FlowContext, rsid string) (*executor.Ruleset, error) {
+func (ctx *RulesetRepoContext) GetRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
 	findOptions := options.Find()
 	findOptions.SetLimit(1)
 	findOptions.SetSkip(0)
@@ -98,9 +98,9 @@ func (ctx *RulesetRepoContext) GetRuleset(flowContext *models.FlowContext, rsid 
 		return nil, err
 	}
 
-	var rulesets []executor.Ruleset
+	var rulesets []evaluator.Ruleset
 	for cursor.Next(context.TODO()) {
-		var rs executor.Ruleset
+		var rs evaluator.Ruleset
 		err := cursor.Decode(&rs)
 		if err != nil {
 			return nil, err
@@ -119,7 +119,7 @@ func (ctx *RulesetRepoContext) GetRuleset(flowContext *models.FlowContext, rsid 
 	return &rulesets[0], nil
 }
 
-func (ctx *RulesetRepoContext) CreateRuleset(flowContext *models.FlowContext, ruleset *executor.Ruleset) (*executor.Ruleset, error) {
+func (ctx *RulesetRepoContext) CreateRuleset(flowContext *models.FlowContext, ruleset *evaluator.Ruleset) (*evaluator.Ruleset, error) {
 	collection := ctx.DB.Database(commons.RULESET_DB).Collection(commons.RULESET_COLLECTION)
 	ctx1, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	resp, err := collection.InsertOne(ctx1, ruleset)
@@ -133,7 +133,7 @@ func (ctx *RulesetRepoContext) CreateRuleset(flowContext *models.FlowContext, ru
 	return ruleset, nil
 }
 
-func GetBSON(entity *executor.Ruleset) *bson.D {
+func GetBSON(entity *evaluator.Ruleset) *bson.D {
 	// TODO: use reflect
 	name := bson.E{Key: "name", Value: entity.Name}
 	startDate := bson.E{Key: "start_date", Value: entity.StartDate}
@@ -144,7 +144,7 @@ func GetBSON(entity *executor.Ruleset) *bson.D {
 	return &bson.D{name, startDate, endDate, enable, rules}
 }
 
-func (ctx *RulesetRepoContext) UpdateRuleset(flowContext *models.FlowContext, rsid string, entity *executor.Ruleset) (string, error) {
+func (ctx *RulesetRepoContext) UpdateRuleset(flowContext *models.FlowContext, rsid string, entity *evaluator.Ruleset) (string, error) {
 	collection := ctx.DB.Database(commons.RULESET_DB).Collection(commons.RULESET_COLLECTION)
 
 	filter := bson.D{{Key: "id", Value: rsid}}
@@ -162,7 +162,7 @@ func (ctx *RulesetRepoContext) UpdateRuleset(flowContext *models.FlowContext, rs
 	return rsid, nil
 }
 
-func (ctx *RulesetRepoContext) DeleteRuleset(flowContext *models.FlowContext, rsid string) (*executor.Ruleset, error) {
+func (ctx *RulesetRepoContext) DeleteRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
 	collection := ctx.DB.Database(commons.RULESET_DB).Collection(commons.RULESET_COLLECTION)
 
 	if rsid == commons.EMPTY {

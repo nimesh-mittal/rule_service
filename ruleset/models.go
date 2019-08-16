@@ -1,7 +1,7 @@
 package ruleset
 
 import (
-	"rule_service/executor"
+	"rule_service/evaluator"
 	"time"
 )
 
@@ -10,12 +10,12 @@ type RulesetDTO struct {
 	StartDate time.Time
 	EndDate   time.Time
 	Enable    bool
-	Rules     []executor.Rule
+	Rules     []evaluator.Rule
 }
 
 type EvaluateResposeDTO struct {
 	Record       map[string]interface{}
-	MatchingRule *executor.Rule
+	MatchingRule *evaluator.Rule
 }
 
 type EvaluateRequestDTO struct {

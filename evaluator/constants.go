@@ -1,4 +1,4 @@
-package executor
+package evaluator
 
 import (
 	"errors"
@@ -13,9 +13,10 @@ const (
 
 // types
 const (
-	NumberType = "Number"
-	StringType = "String"
-	ArrayType  = "Array"
+	NumberType      = "Number"
+	StringType      = "String"
+	NumberArrayType = "NumberArray"
+	StringArrayType = "StringArray"
 )
 
 // errors

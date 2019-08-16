@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"rule_service/commons"
-	"rule_service/executor"
+	"rule_service/evaluator"
 	"rule_service/models"
 	"strconv"
 )
@@ -45,7 +45,7 @@ func (ctx *RulesetContext) EvaluateRuleset(w http.ResponseWriter, r *http.Reques
 	strategy := r.URL.Query().Get("strategy")
 	if strategy == "" {
 		logrus.Info("strategy is not set so setting it to MatchFirst")
-		strategy = executor.MatchFirst
+		strategy = evaluator.MatchFirst
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -61,7 +61,7 @@ func (ctx *RulesetContext) EvaluateRuleset(w http.ResponseWriter, r *http.Reques
 
 	rule, err := ctx.service.Evaluate(flowContext, evaluateRequestDTO.RulesetID, &evaluateRequestDTO.Record, strategy)
 	logrus.Info(rule)
-	record := executor.ApplyRule(rule, &executor.Record{Fields: evaluateRequestDTO.Record})
+	record := evaluator.ApplyRule(rule, &evaluator.Record{Fields: evaluateRequestDTO.Record})
 
 	evaluateResposeDTO := EvaluateResposeDTO{Record: record.Fields, MatchingRule: rule}
 	response := commons.MakeResp(evaluateResposeDTO, commons.EMPTY, err)

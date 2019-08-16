@@ -2,11 +2,11 @@ package ruleset
 
 import (
 	uuid2 "github.com/google/uuid"
-	"rule_service/executor"
+	"rule_service/evaluator"
 )
 
-func ToRuleset(rulesetDTO RulesetDTO) executor.Ruleset {
-	var entity executor.Ruleset
+func ToRuleset(rulesetDTO RulesetDTO) evaluator.Ruleset {
+	var entity evaluator.Ruleset
 	entity.ID = uuid2.New().String()
 	entity.Name = rulesetDTO.Name
 	entity.StartDate = rulesetDTO.StartDate

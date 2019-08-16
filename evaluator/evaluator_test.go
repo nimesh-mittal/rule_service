@@ -1,4 +1,4 @@
-package executor
+package evaluator
 
 import (
 	"reflect"
@@ -64,8 +64,8 @@ func TestParseToType(t *testing.T) {
 		{int8(10), NumberType, reflect.Float64, false},
 		{"money", StringType, reflect.String, false},
 		{nil, StringType, reflect.String, false},
-		{[]int{1, 2, 3}, ArrayType, reflect.Array, true},
-		{uint(1), ArrayType, reflect.Array, true},
+		{[]float64{1.1, 2.1, 3.1}, NumberArrayType, reflect.Array, true},
+		{[]float64{1}, NumberArrayType, reflect.Slice, false},
 	}
 
 	for i, test := range tests {
@@ -77,7 +77,7 @@ func TestParseToType(t *testing.T) {
 		}
 
 		if !test.ErrorExpected && reflect.TypeOf(v).Kind() != test.ExpectedType {
-			t.Errorf("ParseToType(field, type) failed")
+			t.Errorf("ParseToType(field, type) failed %v %v", reflect.TypeOf(v).Kind(), test.ExpectedType)
 		}
 	}
 }
@@ -96,7 +96,12 @@ func TestGetValue(t *testing.T) {
 		{10.0, 10.0, ">=", true, false},
 		{10.0, 10.0, "=", true, false},
 		{10.0, 10.0, "!=", false, false},
+		{20.0, []float64{10.0, 20.0, 30.0}, "in_numbers", true, false},
+		{"apple", []string{"orange", "apple"}, "in_strings", true, false},
+		{20.0, []float64{10.0, 22.0, 30.0}, "in_numbers", false, false},
+		{"apple", []string{"orange", "banana"}, "in_strings", false, false},
 		{"hello world", "hello world", "==", true, false},
+		{"hello world", "hi world", "!==", true, false},
 	}
 
 	for i, test := range tests {
@@ -124,7 +129,7 @@ func TestInferFieldType(t *testing.T) {
 		{"<", NumberType, false, nil},
 		{"==", StringType, false, nil},
 		{"=", NumberType, false, nil},
-		{"in", ArrayType, false, nil},
+		{"in_numbers", NumberArrayType, false, nil},
 		{"##", "", true, ErrorOperatorNotSupported},
 	}
 
@@ -243,12 +248,22 @@ func TestCheckRuleset(t *testing.T) {
 		{"5", "field2", "%", "money", EmptyString},
 	}
 
+	whenConditions6 := []WhenCondition{
+		{ID: "6", Field1: "area_id", Operator: "in_numbers", Field2: []float64{43, 57, 78, 98}, Threshold: EmptyString},
+	}
+
+	whenConditions7 := []WhenCondition{
+		{ID: "7", Field1: "interest", Operator: "in_strings", Field2: []string{"chess", "football", "netflix"}, Threshold: EmptyString},
+	}
+
 	then1 := []ThenAction{{"1", "field1", "=", 10}}
 	rule1 := Rule{ID: "r103", Name: "rule1", Enable: true, WhenConditions: whenConditions1, ThenActions: then1}
 	rule2 := Rule{ID: "r104", Name: "rule2", Enable: true, WhenConditions: whenConditions2, ThenActions: then1}
 	rule3 := Rule{ID: "r105", Name: "rule3", Enable: true, WhenConditions: whenConditions3, ThenActions: then1}
 	rule4 := Rule{ID: "r105", Name: "rule4", Enable: true, WhenConditions: whenConditions4, ThenActions: then1}
-	rule5 := Rule{ID: "r105", Name: "rule4", Enable: true, WhenConditions: whenConditions5, ThenActions: then1}
+	rule5 := Rule{ID: "r105", Name: "rule5", Enable: true, WhenConditions: whenConditions5, ThenActions: then1}
+	rule6 := Rule{ID: "r106", Name: "rule6", Enable: true, WhenConditions: whenConditions6, ThenActions: then1}
+	rule7 := Rule{ID: "r107", Name: "rule7", Enable: true, WhenConditions: whenConditions7, ThenActions: then1}
 
 	ruleset1 := Ruleset{ID: "1", Name: "ruleset1", StartDate: time.Now().Add(-1 * time.Hour),
 		EndDate: time.Now().Add(1 * time.Hour), Enable: true, Rules: []Rule{rule1}}
@@ -264,11 +279,17 @@ func TestCheckRuleset(t *testing.T) {
 		EndDate: time.Now().Add(1 * time.Hour), Enable: true, Rules: []Rule{rule4}}
 	ruleset7 := Ruleset{ID: "7", Name: "ruleset7", StartDate: time.Now().Add(-1 * time.Hour),
 		EndDate: time.Now().Add(1 * time.Hour), Enable: true, Rules: []Rule{rule5}}
+	ruleset8 := Ruleset{ID: "8", Name: "ruleset8", StartDate: time.Now().Add(-1 * time.Hour),
+		EndDate: time.Now().Add(1 * time.Hour), Enable: true, Rules: []Rule{rule6}}
+	ruleset9 := Ruleset{ID: "9", Name: "ruleset9", StartDate: time.Now().Add(-1 * time.Hour),
+		EndDate: time.Now().Add(1 * time.Hour), Enable: true, Rules: []Rule{rule7}}
 
 	record1 := Record{ID: "101", Fields: map[string]interface{}{Field1: 10, Field2: "money"}}
 	record2 := Record{ID: "201", Fields: map[string]interface{}{Field2: "money"}}
 	record3 := Record{ID: "301", Fields: map[string]interface{}{Field1: 30, Field2: "no money"}}
 	record4 := Record{ID: "401", Fields: map[string]interface{}{Field1: "a", Field2: "no money"}}
+	record5 := Record{ID: "501", Fields: map[string]interface{}{"area_id": 98}}
+	record6 := Record{ID: "601", Fields: map[string]interface{}{"interest": "chess"}}
 
 	tests := []struct {
 		Ruleset       Ruleset
@@ -289,6 +310,8 @@ func TestCheckRuleset(t *testing.T) {
 		{ruleset6, record3, EmptyString, true, ErrorOperatorNotSupported},
 		{ruleset1, record4, EmptyString, true, ErrorUnableToParseField},
 		{ruleset7, record2, EmptyString, true, ErrorOperatorNotSupported},
+		{ruleset8, record5, rule6.ID, false, nil},
+		{ruleset9, record6, rule7.ID, false, nil},
 	}
 
 	for i, test := range tests {
@@ -306,11 +329,5 @@ func TestCheckRuleset(t *testing.T) {
 		if test.ErrorExpected && err != test.Error {
 			t.Errorf("got=%v; expected error=%v", err, test.Error)
 		}
-	}
-}
-
-func BenchmarkHello(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		ParseToType(10, NumberType)
 	}
 }

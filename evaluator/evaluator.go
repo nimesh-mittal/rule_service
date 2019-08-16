@@ -1,8 +1,7 @@
-package executor
+package evaluator
 
 import (
 	"github.com/sirupsen/logrus"
-	"reflect"
 	"strconv"
 	"time"
 )
@@ -124,7 +123,14 @@ func CheckWhenCondition(whenCondition WhenCondition, record Record) (bool, error
 		return false, err
 	}
 
-	value1, err = ParseToType(value1, fieldType)
+	LHSType := fieldType
+	if fieldType == NumberArrayType {
+		LHSType = NumberType
+	} else if fieldType == StringArrayType {
+		LHSType = StringType
+	}
+
+	value1, err = ParseToType(value1, LHSType)
 	if err != nil {
 		return false, err
 	}
@@ -144,64 +150,6 @@ func InferFieldType(op string) (string, error) {
 		return "", ErrorOperatorNotSupported
 	}
 	return val, nil
-}
-
-func ParseToType(field interface{}, fieldType string) (interface{}, error) {
-
-	if fieldType == NumberType {
-		if field == nil {
-			return nil, ErrorNumberCantnotBeNil
-		}
-
-		switch reflect.TypeOf(field).Kind() {
-		case reflect.Float64:
-			value := field.(float64)
-			return value, nil
-		case reflect.Float32:
-			f := field.(float32)
-			return float64(f), nil
-		case reflect.Int:
-			f := field.(int)
-			return float64(f), nil
-		case reflect.Int64:
-			f, _ := field.(int64)
-			return float64(f), nil
-		case reflect.Int32:
-			f, _ := field.(int32)
-			return float64(f), nil
-		case reflect.Int16:
-			f, _ := field.(int16)
-			return float64(f), nil
-		case reflect.Int8:
-			f, _ := field.(int8)
-			return float64(f), nil
-		case reflect.String:
-			f, err := strconv.ParseFloat(field.(string), 64)
-			if err != nil {
-				logrus.
-					WithField("field", field).
-					WithField("type", "float64").
-					Error(err)
-				return nil, ErrorUnableToParseField
-			}
-			return float64(f), nil
-		default:
-			return nil, ErrorUnableToInferFieldType
-		}
-	} else if fieldType == StringType {
-		if field == nil {
-			return "", nil
-		}
-		return field.(string), nil
-	} else {
-		logrus.
-			WithField("field", field).
-			WithField("fieldType", fieldType).
-			Error(ErrorOperatorNotSupported)
-		return nil, ErrorOperatorNotSupported
-	}
-
-	return nil, ErrorUnknownCause
 }
 
 func GetValue(f1 interface{}, f2 interface{}, op string) (bool, error) {
