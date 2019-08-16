@@ -137,6 +137,4 @@ func ParseToType(field interface{}, fieldType string) (interface{}, error) {
 			Error(ErrorOperatorNotSupported)
 		return nil, ErrorOperatorNotSupported
 	}
-
-	return nil, ErrorUnknownCause
 }
