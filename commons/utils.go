@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Tracker prints elapse time of function execution
 func Tracker(f1 func() bool) {
 	count := 1000000
 	start := time.Now()

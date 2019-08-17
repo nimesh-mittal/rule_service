@@ -1,7 +1,7 @@
 package ruleset
 
 import (
-	"opensource/rule_service/pkg/evaluator"
+	"rule_service/pkg/evaluator"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type RulesetDTO struct {
 	Rules     []evaluator.Rule
 }
 
-type EvaluateResposeDTO struct {
+type EvaluateResponseDTO struct {
 	Record       map[string]interface{}
 	MatchingRule *evaluator.Rule
 }

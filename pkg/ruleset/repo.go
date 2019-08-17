@@ -3,9 +3,9 @@ package ruleset
 import (
 	"context"
 	"errors"
-	"opensource/rule_service/commons"
-	"opensource/rule_service/models"
-	"opensource/rule_service/pkg/evaluator"
+	"rule_service/commons"
+	"rule_service/models"
+	"rule_service/pkg/evaluator"
 	"time"
 
 	"github.com/mongodb/mongo-go-driver/bson"
@@ -19,7 +19,7 @@ type RulesetRepoContext struct {
 	DB *mongo.Client
 }
 
-// NewRulesetRepoContext
+// NewRulesetRepoContext initialises Ruleset repo
 func NewRulesetRepoContext(dbURL string) (*RulesetRepoContext, error) {
 
 	// setup mongo client
@@ -84,6 +84,7 @@ func (ctx *RulesetRepoContext) ListRuleset(flowContext *models.FlowContext, limi
 	return &rulesets, nil
 }
 
+// GetRuleset get ruleset by ID
 // TODO: make it efficient, current implementation is very hacky
 func (ctx *RulesetRepoContext) GetRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
 	findOptions := options.Find()

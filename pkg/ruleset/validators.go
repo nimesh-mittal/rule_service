@@ -2,7 +2,7 @@ package ruleset
 
 import (
 	uuid2 "github.com/google/uuid"
-	"opensource/rule_service/pkg/evaluator"
+	"rule_service/pkg/evaluator"
 )
 
 func ToRuleset(rulesetDTO RulesetDTO) evaluator.Ruleset {

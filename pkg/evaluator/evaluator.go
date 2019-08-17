@@ -13,7 +13,7 @@ func ApplyRule(rule *Rule, record *Record) *Record {
 	}
 
 	for _, ta := range rule.ThenActions {
-		//Todo: handle error
+		// Todo: handle error
 		value, _ := strconv.ParseFloat(ta.Value.(string), 64)
 		if ta.Operator == "=" {
 			record.Fields[ta.Field1] = value
@@ -75,7 +75,7 @@ func CheckRuleset(rs *Ruleset, record *Record, strategy string) (Rule, error) {
 	return Rule{}, ErrorEmptyMatch
 }
 
-// checks for the eligibility of the rule
+// CheckRulesetIneligible checks for the eligibility of the rule
 func CheckRulesetIneligible(rs Ruleset) bool {
 	if rs.Enable && time.Now().After(rs.StartDate) && time.Now().Before(rs.EndDate) {
 		return false

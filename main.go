@@ -1,28 +1,28 @@
 package main
 
 import (
-	"opensource/rule_service/commons"
-	"opensource/rule_service/infra"
-	"opensource/rule_service/pkg/ruleset"
 	"os"
+	"rule_service/commons"
+	"rule_service/infra"
+	"rule_service/pkg/ruleset"
 )
 
 const (
-	defaultPort              = "8080"
-	defaultRoutingServiceURL = "http://localhost:7878"
+	defaultHostPort = ":3000"
+	defaultBaseURL  = "/api/v1/rulesets"
 )
 
 func main() {
-	// initialise application
-	os.Setenv("ENVIRONMENT", commons.PROD)
+	// Initialise application
+	os.Setenv(commons.ENV_VARIABLE, commons.PROD)
 	serverContext := infra.New()
 
 	// Register Routes
 	rulesetContext := ruleset.NewRulesetContext()
 	defer rulesetContext.SafeClose()
 
-	serverContext.Mount("/api/v1/rulesets", rulesetContext.NewRulesetRouter())
+	serverContext.Mount(defaultBaseURL, rulesetContext.NewRulesetRouter())
 
 	// Start server
-	serverContext.StartServer(":3000")
+	serverContext.StartServer(defaultHostPort)
 }

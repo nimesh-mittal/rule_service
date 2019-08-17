@@ -2,7 +2,7 @@ package infra
 
 import (
 	"github.com/go-chi/chi"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent"
 	"github.com/pressly/chi/middleware"
 	"github.com/sirupsen/logrus"
 	"net/http"

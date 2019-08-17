@@ -6,9 +6,9 @@ import (
 	uuid2 "github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"opensource/rule_service/commons"
-	"opensource/rule_service/models"
-	"opensource/rule_service/pkg/evaluator"
+	"rule_service/commons"
+	"rule_service/models"
+	"rule_service/pkg/evaluator"
 	"strconv"
 )
 
@@ -63,7 +63,7 @@ func (ctx *RulesetContext) EvaluateRuleset(w http.ResponseWriter, r *http.Reques
 	logrus.Info(rule)
 	record := evaluator.ApplyRule(rule, &evaluator.Record{Fields: evaluateRequestDTO.Record})
 
-	evaluateResposeDTO := EvaluateResposeDTO{Record: record.Fields, MatchingRule: rule}
+	evaluateResposeDTO := EvaluateResponseDTO{Record: record.Fields, MatchingRule: rule}
 	response := commons.MakeResp(evaluateResposeDTO, commons.EMPTY, err)
 
 	w.Write(response)

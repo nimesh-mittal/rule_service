@@ -2,10 +2,10 @@ package ruleset
 
 import (
 	"github.com/sirupsen/logrus"
-	"opensource/rule_service/commons"
-	"opensource/rule_service/config"
-	"opensource/rule_service/models"
-	"opensource/rule_service/pkg/evaluator"
+	"rule_service/commons"
+	"rule_service/config"
+	"rule_service/models"
+	"rule_service/pkg/evaluator"
 )
 
 type RulesetServiceContext struct {
@@ -22,6 +22,7 @@ func NewRulesetServiceContext(flowContext *models.FlowContext) *RulesetServiceCo
 	return &ctx
 }
 
+// Evaluate record for ruleset id
 func (ctx *RulesetServiceContext) Evaluate(flowContext *models.FlowContext,
 	rulesetID string, record *map[string]interface{}, strategy string) (*evaluator.Rule, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("evaluating ruleset")
@@ -52,10 +53,10 @@ func (ctx *RulesetServiceContext) ListRuleset(flowContext *models.FlowContext, l
 	return rulesets, nil
 }
 
-func (ctx *RulesetServiceContext) GetRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
-	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("get geofence by id")
+func (ctx *RulesetServiceContext) GetRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
+	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("get ruleset by id")
 
-	c, err := ctx.repo.GetRuleset(flowContext, rsid)
+	c, err := ctx.repo.GetRuleset(flowContext, id)
 
 	if err != nil {
 		return nil, err
@@ -74,22 +75,22 @@ func (ctx *RulesetServiceContext) CreateRuleset(flowContext *models.FlowContext,
 	return c, nil
 }
 
-func (ctx *RulesetServiceContext) UpdateRuleset(flowContext *models.FlowContext, rsid string, entity *evaluator.Ruleset) (string, error) {
-	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("updating geofence")
+func (ctx *RulesetServiceContext) UpdateRuleset(flowContext *models.FlowContext, id string, entity *evaluator.Ruleset) (string, error) {
+	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("updating ruleset")
 
-	rsid, err := ctx.repo.UpdateRuleset(flowContext, rsid, entity)
+	id, err := ctx.repo.UpdateRuleset(flowContext, id, entity)
 
 	if err != nil {
 		return "", err
 	}
 
-	return rsid, nil
+	return id, nil
 }
 
-func (ctx *RulesetServiceContext) DeleteRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
-	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("deleting geofence")
+func (ctx *RulesetServiceContext) DeleteRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
+	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("deleting ruleset")
 
-	c, err := ctx.repo.DeleteRuleset(flowContext, rsid)
+	c, err := ctx.repo.DeleteRuleset(flowContext, id)
 
 	if err != nil {
 		return nil, err
