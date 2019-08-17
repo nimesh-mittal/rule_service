@@ -1,7 +1,7 @@
 package ruleset
 
 import (
-	"rule_service/evaluator"
+	"opensource/rule_service/pkg/evaluator"
 	"time"
 )
 

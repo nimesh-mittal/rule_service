@@ -6,9 +6,9 @@ import (
 	uuid2 "github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"net/http"
-	"rule_service/commons"
-	"rule_service/evaluator"
-	"rule_service/models"
+	"opensource/rule_service/commons"
+	"opensource/rule_service/models"
+	"opensource/rule_service/pkg/evaluator"
 	"strconv"
 )
 

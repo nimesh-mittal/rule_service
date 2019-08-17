@@ -2,10 +2,10 @@ package ruleset
 
 import (
 	"github.com/sirupsen/logrus"
-	"rule_service/commons"
-	"rule_service/config"
-	"rule_service/evaluator"
-	"rule_service/models"
+	"opensource/rule_service/commons"
+	"opensource/rule_service/config"
+	"opensource/rule_service/models"
+	"opensource/rule_service/pkg/evaluator"
 )
 
 type RulesetServiceContext struct {
@@ -13,8 +13,9 @@ type RulesetServiceContext struct {
 }
 
 func NewRulesetServiceContext(flowContext *models.FlowContext) *RulesetServiceContext {
-	repo, _ := NewRulesetRepoContext(config.GetInstance().Database.Dialect,
-		config.GetInstance().Database.MongoURL)
+	logrus.WithField(commons.TrackingID, flowContext.TrackingID).
+		Info("setting up ruleset service")
+	repo, _ := NewRulesetRepoContext(config.GetInstance().Database.MongoURL)
 
 	ctx := RulesetServiceContext{repo: repo}
 

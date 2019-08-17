@@ -1,10 +1,10 @@
 package main
 
 import (
+	"opensource/rule_service/commons"
+	"opensource/rule_service/infra"
+	"opensource/rule_service/pkg/ruleset"
 	"os"
-	"rule_service/commons"
-	"rule_service/infra"
-	"rule_service/ruleset"
 )
 
 const (

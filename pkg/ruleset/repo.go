@@ -3,9 +3,9 @@ package ruleset
 import (
 	"context"
 	"errors"
-	"rule_service/commons"
-	"rule_service/evaluator"
-	"rule_service/models"
+	"opensource/rule_service/commons"
+	"opensource/rule_service/models"
+	"opensource/rule_service/pkg/evaluator"
 	"time"
 
 	"github.com/mongodb/mongo-go-driver/bson"
@@ -19,7 +19,8 @@ type RulesetRepoContext struct {
 	DB *mongo.Client
 }
 
-func NewRulesetRepoContext(dialect string, dbURL string) (*RulesetRepoContext, error) {
+// NewRulesetRepoContext
+func NewRulesetRepoContext(dbURL string) (*RulesetRepoContext, error) {
 
 	// setup mongo client
 	ctx1, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -148,8 +149,8 @@ func (ctx *RulesetRepoContext) UpdateRuleset(flowContext *models.FlowContext, rs
 	collection := ctx.DB.Database(commons.RULESET_DB).Collection(commons.RULESET_COLLECTION)
 
 	filter := bson.D{{Key: "id", Value: rsid}}
-	new := bson.D{{Key: "$set", Value: GetBSON(entity)}}
-	res, err := collection.UpdateOne(context.TODO(), filter, new)
+	newRecord := bson.D{{Key: "$set", Value: GetBSON(entity)}}
+	res, err := collection.UpdateOne(context.TODO(), filter, newRecord)
 
 	if err != nil {
 		return commons.EMPTY, err
