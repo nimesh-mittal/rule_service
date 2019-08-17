@@ -3,6 +3,18 @@ Generic rule service to maintain and evaluate rules as REST service.
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/nimesh-mittal/rule_service)](https://goreportcard.com/report/github.com/nimesh-mittal/rule_service)
 
+#### Supported Operators
+| Operator | Supported |
+|----------|-----------|
+| '>'      | Yes       |
+| <        | Yes       |
+| >=       | Yes       |
+| <=       | Yes       |
+| ==       | Yes       |
+| !=       | Yes       |
+| in       | Yes       |
+| not_in   | Yes       |
+
 # Setup
 - step 1: change MongoURL in config/config.yaml
 - step 2: dep ensure
