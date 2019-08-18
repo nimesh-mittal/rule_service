@@ -86,40 +86,19 @@ func (ctx *RepoContext) ListRuleset(flowContext *models.FlowContext, limit int, 
 }
 
 // GetRuleset get ruleset by ID
-// TODO: make it efficient, current implementation is very hacky
 func (ctx *RepoContext) GetRuleset(flowContext *models.FlowContext, rsid string) (*evaluator.Ruleset, error) {
-	findOptions := options.Find()
-	findOptions.SetLimit(1)
-	findOptions.SetSkip(0)
 
 	collection := ctx.DB.Database(commons.RULESET_DB).Collection(commons.RULESET_COLLECTION)
 	filter := bson.D{{Key: "id", Value: rsid}}
-	cursor, err := collection.Find(context.TODO(), filter, findOptions)
 
-	defer cursor.Close(context.TODO())
+	var rs evaluator.Ruleset
+	err := collection.FindOne(context.TODO(), filter).Decode(&rs)
+
 	if err != nil {
 		return nil, err
 	}
 
-	var rulesets []evaluator.Ruleset
-	for cursor.Next(context.TODO()) {
-		var rs evaluator.Ruleset
-		err := cursor.Decode(&rs)
-		if err != nil {
-			return nil, err
-		}
-		rulesets = append(rulesets, rs)
-	}
-
-	if err := cursor.Err(); err != nil {
-		return nil, err
-	}
-
-	if len(rulesets) <= 0 {
-		return nil, errors.New("record not found")
-	}
-
-	return &rulesets[0], nil
+	return &rs, nil
 }
 
 func (ctx *RepoContext) CreateRuleset(flowContext *models.FlowContext, ruleset *evaluator.Ruleset) (*evaluator.Ruleset, error) {
