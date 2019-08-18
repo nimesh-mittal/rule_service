@@ -12,21 +12,23 @@ import (
 	"strconv"
 )
 
-type RulesetContext struct {
-	service *RulesetServiceContext
+// HandlerContext holds state of Handlers
+type HandlerContext struct {
+	service *ServiceContext
 }
 
-func NewRulesetContext() *RulesetContext {
+// NewHandlerContext returns instance of HandlerContext
+func NewHandlerContext() *HandlerContext {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
-	service := NewRulesetServiceContext(flowContext)
-	return &RulesetContext{service: service}
+	service := NewServiceContext(flowContext)
+	return &HandlerContext{service: service}
 }
 
-func (bc *RulesetContext) SafeClose() {
+func (bc *HandlerContext) SafeClose() {
 
 }
 
-func (ctx *RulesetContext) NewRulesetRouter() http.Handler {
+func (ctx *HandlerContext) NewRulesetRouter() http.Handler {
 	r := chi.NewRouter()
 
 	r.Get("/", ctx.ListRuleset)
@@ -39,7 +41,7 @@ func (ctx *RulesetContext) NewRulesetRouter() http.Handler {
 	return r
 }
 
-func (ctx *RulesetContext) EvaluateRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) EvaluateRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	strategy := r.URL.Query().Get("strategy")
@@ -70,7 +72,7 @@ func (ctx *RulesetContext) EvaluateRuleset(w http.ResponseWriter, r *http.Reques
 	return
 }
 
-func (ctx *RulesetContext) GetRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) GetRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	rsid := chi.URLParam(r, "RulesetID")
@@ -89,7 +91,7 @@ func (ctx *RulesetContext) GetRuleset(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ctx *RulesetContext) ListRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) ListRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	limitStr := r.URL.Query().Get("limit")
@@ -112,7 +114,7 @@ func (ctx *RulesetContext) ListRuleset(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ctx *RulesetContext) CreateRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) CreateRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	decoder := json.NewDecoder(r.Body)
@@ -134,7 +136,7 @@ func (ctx *RulesetContext) CreateRuleset(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (ctx *RulesetContext) UpdateRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) UpdateRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	rsid := chi.URLParam(r, "RulesetID")
@@ -159,7 +161,7 @@ func (ctx *RulesetContext) UpdateRuleset(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (ctx *RulesetContext) DeleteRuleset(w http.ResponseWriter, r *http.Request) {
+func (ctx *HandlerContext) DeleteRuleset(w http.ResponseWriter, r *http.Request) {
 	flowContext := &models.FlowContext{TrackingID: uuid2.New().String()}
 
 	rsid := chi.URLParam(r, "RulesetID")

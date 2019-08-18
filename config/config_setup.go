@@ -36,7 +36,7 @@ func NewViperConfig() *Configuration {
 }
 
 func GetConfigName() string {
-	env := os.Getenv(commons.ENV_VARIABLE)
+	env := os.Getenv(commons.EnvVariable)
 	if env == commons.DEV {
 		return commons.DEV_CONFIG_PATH
 	} else if env == commons.QA {

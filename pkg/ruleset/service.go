@@ -8,22 +8,24 @@ import (
 	"rule_service/pkg/evaluator"
 )
 
-type RulesetServiceContext struct {
-	repo *RulesetRepoContext
+// ServiceContext holds service state
+type ServiceContext struct {
+	repo *RepoContext
 }
 
-func NewRulesetServiceContext(flowContext *models.FlowContext) *RulesetServiceContext {
+// NewServiceContext returns instance of ServiceContext
+func NewServiceContext(flowContext *models.FlowContext) *ServiceContext {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).
 		Info("setting up ruleset service")
-	repo, _ := NewRulesetRepoContext(config.GetInstance().Database.MongoURL)
+	repo, _ := NewRepoContext(config.GetInstance().Database.MongoURL)
 
-	ctx := RulesetServiceContext{repo: repo}
+	ctx := ServiceContext{repo: repo}
 
 	return &ctx
 }
 
 // Evaluate record for ruleset id
-func (ctx *RulesetServiceContext) Evaluate(flowContext *models.FlowContext,
+func (ctx *ServiceContext) Evaluate(flowContext *models.FlowContext,
 	rulesetID string, record *map[string]interface{}, strategy string) (*evaluator.Rule, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("evaluating ruleset")
 
@@ -41,7 +43,7 @@ func (ctx *RulesetServiceContext) Evaluate(flowContext *models.FlowContext,
 	return &rule, nil
 }
 
-func (ctx *RulesetServiceContext) ListRuleset(flowContext *models.FlowContext, limit int, offset int) (*[]evaluator.Ruleset, error) {
+func (ctx *ServiceContext) ListRuleset(flowContext *models.FlowContext, limit int, offset int) (*[]evaluator.Ruleset, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("listing rulesets")
 
 	rulesets, err := ctx.repo.ListRuleset(flowContext, limit, offset)
@@ -53,7 +55,7 @@ func (ctx *RulesetServiceContext) ListRuleset(flowContext *models.FlowContext, l
 	return rulesets, nil
 }
 
-func (ctx *RulesetServiceContext) GetRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
+func (ctx *ServiceContext) GetRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("get ruleset by id")
 
 	c, err := ctx.repo.GetRuleset(flowContext, id)
@@ -64,7 +66,7 @@ func (ctx *RulesetServiceContext) GetRuleset(flowContext *models.FlowContext, id
 	return c, nil
 }
 
-func (ctx *RulesetServiceContext) CreateRuleset(flowContext *models.FlowContext, ruleset *evaluator.Ruleset) (*evaluator.Ruleset, error) {
+func (ctx *ServiceContext) CreateRuleset(flowContext *models.FlowContext, ruleset *evaluator.Ruleset) (*evaluator.Ruleset, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("creating ruleset")
 
 	c, err := ctx.repo.CreateRuleset(flowContext, ruleset)
@@ -75,7 +77,7 @@ func (ctx *RulesetServiceContext) CreateRuleset(flowContext *models.FlowContext,
 	return c, nil
 }
 
-func (ctx *RulesetServiceContext) UpdateRuleset(flowContext *models.FlowContext, id string, entity *evaluator.Ruleset) (string, error) {
+func (ctx *ServiceContext) UpdateRuleset(flowContext *models.FlowContext, id string, entity *evaluator.Ruleset) (string, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("updating ruleset")
 
 	id, err := ctx.repo.UpdateRuleset(flowContext, id, entity)
@@ -87,7 +89,7 @@ func (ctx *RulesetServiceContext) UpdateRuleset(flowContext *models.FlowContext,
 	return id, nil
 }
 
-func (ctx *RulesetServiceContext) DeleteRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
+func (ctx *ServiceContext) DeleteRuleset(flowContext *models.FlowContext, id string) (*evaluator.Ruleset, error) {
 	logrus.WithField(commons.TrackingID, flowContext.TrackingID).Info("deleting ruleset")
 
 	c, err := ctx.repo.DeleteRuleset(flowContext, id)

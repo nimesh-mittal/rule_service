@@ -34,8 +34,9 @@ func New() *ServerContext {
 	return &ServerContext{Router: router}
 }
 
+// StartServer starts HTTP server
 func (ctx *ServerContext) StartServer(address string) {
-	http.ListenAndServe(address, ctx.Router)
+	_ = http.ListenAndServe(address, ctx.Router)
 }
 
 func (ctx *ServerContext) Register(path string, handle func(http.ResponseWriter, *http.Request), method string) {

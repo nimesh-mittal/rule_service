@@ -13,10 +13,9 @@ const (
 
 // common
 const (
-	EMPTY        = ""
-	ENV_VARIABLE = "ENVIRONMENT"
-	OK           = "ok"
-	TrackingID   = "TrackingID"
+	EMPTY       = ""
+	EnvVariable = "ENVIRONMENT"
+	TrackingID  = "TrackingID"
 )
 
 // mongo

@@ -14,11 +14,12 @@ const (
 
 func main() {
 	// Initialise application
-	os.Setenv(commons.ENV_VARIABLE, commons.PROD)
+	_ = os.Setenv(commons.EnvVariable, commons.PROD)
+
 	serverContext := infra.New()
 
 	// Register Routes
-	rulesetContext := ruleset.NewRulesetContext()
+	rulesetContext := ruleset.NewHandlerContext()
 	defer rulesetContext.SafeClose()
 
 	serverContext.Mount(defaultBaseURL, rulesetContext.NewRulesetRouter())
